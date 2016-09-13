@@ -3,7 +3,10 @@
 #include <stdlib.h>
 #include <iostream>
 #include <cmath>
-#include "tinyxml.h"
+#include "tinyxml2.h"
+
+using namespace tinyxml2;
+using namespace std;
 
 GLfloat gx=0,gy=0;
 int keyStatus[256];
@@ -104,10 +107,56 @@ void init (void)
 
 int main (int argc, char** argv)
 {
+	
+	char* filePath = NULL;
+	XMLDocument configFile;
+	
+	if (argc > 1 ){
+		filePath = argv[1];
+		cout << "Esse eh o nome do arquivo: " << filePath << endl;
+	}
+	
+	if(filePath != NULL){
+		configFile.LoadFile(filePath);
+	}
+	
+	if(configFile.ErrorID() == 0){
+		XMLElement* janela = configFile.FirstChildElement("aplicacao")->FirstChildElement("janela");
+		XMLElement* quadrado = configFile.FirstChildElement("aplicacao")->FirstChildElement("quadrado");
+		XMLElement* fundo = janela->FirstChildElement("fundo");
+
+		const char* larguraJanela = janela->FirstChildElement("largura")->GetText();
+		const char* alturaJanela = janela->FirstChildElement("altura")->GetText();
+		const char* tituloJanela = janela->FirstChildElement("titulo")->GetText();
+		
+		printf("O titulo eh esse: %s\n O tamanho da janela eh: %sx%s\n",tituloJanela,larguraJanela,alturaJanela);
+		
+		int rFundo,gFundo,bFundo;
+		
+		fundo->QueryIntAttribute("corR",&rFundo);
+		fundo->QueryIntAttribute("corG",&gFundo);
+		fundo->QueryIntAttribute("corB",&bFundo);
+		
+		int tamQuad,rQuad,gQuad,bQuad;
+		
+		quadrado->QueryIntAttribute("tamanho",&tamQuad);
+		quadrado->QueryIntAttribute("corR",&rQuad);
+		quadrado->QueryIntAttribute("corG",&gQuad);
+		quadrado->QueryIntAttribute("corB",&bQuad);
+		
+		
+	
+		printf("Cor do fundo: \nR:%d \nG:%d \nB:%d\n\n",rFundo,gFundo,bFundo);
+		
+		printf("Stats do Quadrado: \nTamanho: %d\nR:%d \nG:%d \nB:%d\n",tamQuad,rQuad,gQuad,bQuad);
+		
+	}else
+		cout << "Erro no arquivo de entrada config.xml" << endl;
+	
 	// zerar o vetor de status das teclas
 	memset(keyStatus,256,sizeof(int));
 	
-	glutInit(&argc,argv);
+	/*glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB);
 	glutInitWindowSize(250,250);
 	glutInitWindowPosition(100,100);
@@ -120,8 +169,8 @@ int main (int argc, char** argv)
 	glutMouseFunc(mouse);
 
 	glutMainLoop();
-
-	//TiXmlDocument doc("config.xml");
+*/
+	
 	/* C ANSI requer que main retorne um inteiro */
 	return 0;
 }
