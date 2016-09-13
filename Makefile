@@ -1,4 +1,4 @@
-all: compila executa
+all: compila executa clean
 
 compila:
 		g++ -c tinyxml2.cpp
@@ -6,3 +6,6 @@ compila:
 
 executa: 
 		./trab1 config.xml
+
+clean: 
+		@rm -f *.o
