@@ -11,18 +11,21 @@ using namespace std;
 GLfloat gx=0,gy=0;
 int keyStatus[256];
 
+// Parametros da janela
 int larguraJanela, alturaJanela;
 
+// Parametros referentes ao quadrado
 int tamQuadrado_2,xcQuadrado,ycQuadrado;
-
 GLfloat rQuadrado,gQuadrado,bQuadrado;
 
+// Variavel que guarda se ja existe ou nao um quadrado na tela
 bool existeQuadrado = false;
 
-// Guarda se o botao direito esta pressionado ou nao
+// Guarda se o botao direito esta pressionado ou nao e qual a ultima
+// posicao do ponteiro do mouse.
 bool botaoEsqPressionado;
-int xInicialBotaoEsq;
-int yInicialBotaoEsq;
+int xLastBotaoEsq;
+int yLastBotaoEsq;
 
 void mouse(int botao, int estado, int x, int y)
 {
@@ -35,20 +38,19 @@ void mouse(int botao, int estado, int x, int y)
 		
 		if( (abs(x - xcQuadrado) <= tamQuadrado_2) && (abs(y - ycQuadrado) <= tamQuadrado_2) ){
 			botaoEsqPressionado = true;
-			xInicialBotaoEsq = x;
-			yInicialBotaoEsq = y;
+			xLastBotaoEsq = x;
+			yLastBotaoEsq = y;
 		}
 	
 	}
 	else{
 		botaoEsqPressionado = false;
-		xInicialBotaoEsq = -1;
-		yInicialBotaoEsq = -1;
+		xLastBotaoEsq = -1;
+		yLastBotaoEsq = -1;
 	}
 	
 	if(botao == GLUT_RIGHT_BUTTON && estado == GLUT_DOWN){
 		// O botao direito do mouse foi clicado
-		printf("xM: %d (%d,%d) \ny: %d (%d,%d)\n",x,xcQuadrado-metade,xcQuadrado+metade,y,ycQuadrado+metade,ycQuadrado-metade);
 		
 		if(existeQuadrado){
 			
@@ -75,52 +77,21 @@ void motion(int x, int y){
 	y = alturaJanela - y;
 	
 	if(botaoEsqPressionado){
-		xcQuadrado = xcQuadrado + (x - xInicialBotaoEsq);
-		ycQuadrado = ycQuadrado + (y - yInicialBotaoEsq);
+		xcQuadrado = xcQuadrado + (x - xLastBotaoEsq);
+		ycQuadrado = ycQuadrado + (y - yLastBotaoEsq);
 		glutPostRedisplay();
+		xLastBotaoEsq = x;
+		yLastBotaoEsq = y;
 	}
 	
-}
-
-void keyUp(unsigned char key, int x, int y)
-{
-	keyStatus[key] = 0;
-}
-
-void keyPress(unsigned char key, int x, int y)
-{
-	/*switch(key)
-	{
-		case 'w':
-		case 'W':
-			gy += 0.01;
-			break;
-		case 's':
-		case 'S':
-			gy -= 0.01;
-			break;
-		case 'd':
-		case 'D':
-			gx += 0.01;
-			break;
-		case 'a':
-		case 'A':
-			gx -= 0.01;
-			break; 
-	}
-
-	glutPostRedisplay();
-	*/
-
-	keyStatus[key] = 1;
 }
 
 void display(void)
 {
-	/*limpar todos os pixels */
+	/* Limpar todos os pixels */
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-	/* Desenhar um polígono branco (retângulo) */
+	/* Desenhar o quadrado */
 	if(existeQuadrado){
 		
 		float xcNormalizado = xcQuadrado/(float) larguraJanela;
@@ -136,26 +107,8 @@ void display(void)
 		glEnd();
 	}
 
-	/* Não esperar */
-	//glFlush();
+	/* Trocar buffers */
 	glutSwapBuffers();
-}
-
-void idle (void)
-{
-	if( keyStatus['W'] == 1 || keyStatus['w'] == 1 )
-		gy += 0.01;
-	
-	if( keyStatus['S'] == 1 || keyStatus['s'] == 1 )
-		gy -= 0.01;
-	
-	if( keyStatus['D'] == 1 || keyStatus['d'] == 1 )
-		gx += 0.01;
-	
-	if( keyStatus['A'] == 1 || keyStatus['a'] == 1 )
-		gx -= 0.01;
-		
-	glutPostRedisplay();
 }
 
 void init (int r, int g, int b)
@@ -240,9 +193,6 @@ int main (int argc, char** argv)
 		init(rFundo,gFundo,bFundo);
 		
 		glutDisplayFunc(display);
-		glutKeyboardFunc(keyPress);
-		glutKeyboardUpFunc(keyUp);
-		glutIdleFunc(idle);
 		glutMouseFunc(mouse);
 		glutMotionFunc(motion);
 		glutMainLoop();
