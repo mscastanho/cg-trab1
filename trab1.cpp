@@ -128,20 +128,22 @@ void init (int r, int g, int b)
 int main (int argc, char** argv)
 {
 	
-	char* filePath = NULL;
+	string filePath;
 	XMLDocument configFile;
 	
 	// Confere se o arquivo XML foi passado como parametro de entrada
-	if (argc > 1 )
+	if (argc > 1 ){
 		filePath = argv[1];
-	else{
+		filePath += "config.xml";
+		cout << filePath << endl;
+	}else{
 		cout << "Por favor entre com o arquivo XML" << endl;
-		cout << "Ex: trabalhocg <caminho para config.xml>" << endl;
+		cout << "Ex: trabalhocg <caminho para pasta de config.xml>" << endl;
 		return 0;
 	}
 	
-	if(filePath != NULL){
-		configFile.LoadFile(filePath);
+	if(filePath != ""){
+		configFile.LoadFile(filePath.c_str());
 	}
 	
 	if(configFile.ErrorID() != 0)
