@@ -36,10 +36,19 @@ void mouse(int botao, int estado, int x, int y)
 	
 	if(botao == GLUT_LEFT_BUTTON && estado == GLUT_DOWN){
 		
-		if( (abs(x - xcQuadrado) <= tamQuadrado_2) && (abs(y - ycQuadrado) <= tamQuadrado_2) ){
-			botaoEsqPressionado = true;
-			xLastBotaoEsq = x;
-			yLastBotaoEsq = y;
+		if(existeQuadrado){
+		
+			if( (abs(x - xcQuadrado) <= tamQuadrado_2) && (abs(y - ycQuadrado) <= tamQuadrado_2) ){
+				botaoEsqPressionado = true;
+				xLastBotaoEsq = x;
+				yLastBotaoEsq = y;
+			}
+		}else{
+			// Nao existe quadrado ainda
+			xcQuadrado = x;
+			ycQuadrado = y;
+			existeQuadrado = true;
+			glutPostRedisplay();
 		}
 	
 	}
@@ -60,12 +69,6 @@ void mouse(int botao, int estado, int x, int y)
 				glutPostRedisplay();
 			}
 			
-		}else{
-			// Nao existe quadrado ainda
-			xcQuadrado = x;
-			ycQuadrado = y;
-			existeQuadrado = true;
-			glutPostRedisplay();
 		}
 	}
 	

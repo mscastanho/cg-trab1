@@ -1,4 +1,4 @@
-all: compila clean executa
+all: compila clean
 
 compila:
 		g++ -c tinyxml2.cpp
@@ -7,6 +7,4 @@ compila:
 clean: 
 		@rm -f *.o
 
-executa: 
-		./trabalhocg ~/Documents/CG/config.xml
 
